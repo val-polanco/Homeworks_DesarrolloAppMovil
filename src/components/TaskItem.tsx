@@ -21,13 +21,15 @@ interface Props {
   tarea: Tarea;
   onComplete: (id: string) => void;
   onDelete: (id: string) => void;
+  isConnected: boolean;
 }
 
 
 function TaskItem({
   tarea,
   onComplete,
-  onDelete
+  onDelete,
+  isConnected
 }: Props) {
 
   const navigate =
@@ -41,6 +43,7 @@ function TaskItem({
       <IonCheckbox
         slot="start"
         checked={tarea.completada}
+        disabled={!isConnected}
         onIonChange={() =>
           onComplete(tarea.id)
         }
@@ -62,15 +65,12 @@ function TaskItem({
 
         </h2>
 
-
         <p>
-
           {
             tarea.completada
               ? "Completada"
               : "Pendiente"
           }
-
         </p>
 
       </IonLabel>
@@ -87,24 +87,21 @@ function TaskItem({
             )
           }
         >
-
           Ver
-
         </IonButton>
 
 
         <IonButton
           size="small"
           fill="clear"
+          disabled={!isConnected}
           onClick={() =>
             navigate(
               `/tasks/edit/${tarea.id}`
             )
           }
         >
-
           Editar
-
         </IonButton>
 
 
@@ -112,13 +109,12 @@ function TaskItem({
           size="small"
           color="danger"
           fill="clear"
+          disabled={!isConnected}
           onClick={() =>
             onDelete(tarea.id)
           }
         >
-
           Eliminar
-
         </IonButton>
 
       </div>

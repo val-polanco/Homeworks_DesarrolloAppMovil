@@ -16,13 +16,15 @@ interface Props {
   tareas: Tarea[];
   onComplete: (id: string) => void;
   onDelete: (id: string) => void;
+  isConnected: boolean;
 }
 
 
 function TaskList({
   tareas,
   onComplete,
-  onDelete
+  onDelete,
+  isConnected
 }: Props) {
 
   return (
@@ -36,6 +38,7 @@ function TaskList({
           tarea={tarea}
           onComplete={onComplete}
           onDelete={onDelete}
+          isConnected={isConnected}
         />
 
       ))}

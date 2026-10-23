@@ -27,6 +27,10 @@ import {
 
 import "./TaskManager.css";
 
+import {
+  useNetwork
+} from "../hooks/useNetwork";
+
 
 function TaskManager() {
 
@@ -38,6 +42,10 @@ function TaskManager() {
 
   const navigate =
     useNavigate();
+
+  const {
+    isConnected
+    } = useNetwork();
 
 
   if (
@@ -152,6 +160,30 @@ function TaskManager() {
           </div>
 
 
+          <div
+            style={{
+              padding: "12px 16px",
+              marginBottom: "18px",
+              borderRadius: "14px",
+              background:
+                isConnected
+                  ? "#e8f5e9"
+                  : "#fff3e0",
+              color:
+                isConnected
+                  ? "#2e7d32"
+                  : "#e65100",
+              fontWeight: 600
+            }}
+          >
+            {
+              isConnected
+              ? "● Conectado"
+              : "● Sin conexión — las tareas online están bloqueadas"
+            }
+          </div>
+
+
           <h2 className="task-section-title">
             Tus tareas
           </h2>
@@ -194,6 +226,7 @@ function TaskManager() {
           <IonButton
             expand="block"
             className="task-new-button"
+            disabled={!isConnected}
             onClick={() =>
               navigate("/tasks/new")
             }
@@ -214,6 +247,16 @@ function TaskManager() {
           </IonButton>
 
 
+          <IonButton
+            expand="block"
+            fill="outline"
+            onClick={() =>
+            navigate("/fruits")
+            }
+          >
+            Frutas locales - Dexie
+          </IonButton>
+
           <h3 className="task-list-title">
             Lista de tareas
           </h3>
@@ -230,6 +273,7 @@ function TaskManager() {
                     tareas={tareas}
                     onComplete={completarTarea}
                     onDelete={eliminarTarea}
+                    isConnected={isConnected}
                   />
 
                 )

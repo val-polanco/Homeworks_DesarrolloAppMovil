@@ -33,6 +33,8 @@ import TaskManager from "./pages/TaskManager";
 import AddEditTask from "./pages/AddEditTask";
 import TaskDetail from "./pages/TaskDetail";
 import Contacts from "./pages/Contacts";
+import Fruits from "./pages/Fruits";
+
 
 import "@ionic/react/css/core.css";
 import "@ionic/react/css/normalize.css";
@@ -124,11 +126,22 @@ function AppRoutes() {
           }
         />
 
+
         <Route
           path="/contacts"
           element={
             user
               ? <Contacts />
+              : <Navigate to="/login" replace />
+          }
+        />
+
+
+        <Route
+          path="/fruits"
+          element={
+            user
+              ? <Fruits />
               : <Navigate to="/login" replace />
           }
         />
