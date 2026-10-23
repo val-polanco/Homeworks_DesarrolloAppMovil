@@ -26,6 +26,10 @@ import {
   useCollection
 } from "../hooks/useCollection";
 
+import {
+  useNetwork
+} from "../hooks/useNetwork";
+
 
 interface Contacto {
   id: string;
@@ -38,6 +42,11 @@ function Contacts() {
 
   const navigate =
     useNavigate();
+
+
+  const {
+    isConnected
+  } = useNetwork();
 
 
   const {
@@ -106,13 +115,30 @@ function Contacts() {
 
   useEffect(() => {
 
-    cargarContactos();
+    if (isConnected) {
+      cargarContactos();
+    } else {
+      setLoading(false);
+    }
 
-  }, []);
+  }, [isConnected]);
 
 
   const guardarContacto =
     async () => {
+
+      if (!isConnected) {
+
+        setMensaje(
+          "Necesitas conexión a Internet para guardar contactos."
+        );
+
+        setMostrarToast(true);
+
+        return;
+
+      }
+
 
       if (
         nombre.trim() === "" ||
@@ -186,6 +212,11 @@ function Contacts() {
   const editarContacto =
     (contacto: Contacto) => {
 
+      if (!isConnected) {
+        return;
+      }
+
+
       setNombre(
         contacto.nombre
       );
@@ -205,6 +236,19 @@ function Contacts() {
     async (
       id: string
     ) => {
+
+      if (!isConnected) {
+
+        setMensaje(
+          "Necesitas conexión a Internet para eliminar contactos."
+        );
+
+        setMostrarToast(true);
+
+        return;
+
+      }
+
 
       try {
 
@@ -272,6 +316,32 @@ function Contacts() {
         </IonButton>
 
 
+        <div
+          style={{
+            padding: "12px 16px",
+            marginBottom: "18px",
+            borderRadius: "14px",
+            background:
+              isConnected
+                ? "#e8f5e9"
+                : "#fff3e0",
+            color:
+              isConnected
+                ? "#2e7d32"
+                : "#e65100",
+            fontWeight: 600
+          }}
+        >
+
+          {
+            isConnected
+              ? "● Conectado"
+              : "● Sin conexión — los contactos online están bloqueados"
+          }
+
+        </div>
+
+
         <h1>
           Contactos en Firebase
         </h1>
@@ -288,6 +358,7 @@ function Contacts() {
             labelPlacement="stacked"
             placeholder="Nombre del contacto"
             value={nombre}
+            disabled={!isConnected}
             onIonInput={(e) =>
               setNombre(
                 e.detail.value ?? ""
@@ -306,6 +377,7 @@ function Contacts() {
             type="tel"
             placeholder="Número de teléfono"
             value={telefono}
+            disabled={!isConnected}
             onIonInput={(e) =>
               setTelefono(
                 e.detail.value ?? ""
@@ -319,6 +391,7 @@ function Contacts() {
         <IonButton
           expand="block"
           className="ion-margin-top"
+          disabled={!isConnected}
           onClick={guardarContacto}
         >
 
@@ -337,6 +410,7 @@ function Contacts() {
             <IonButton
               expand="block"
               fill="clear"
+              disabled={!isConnected}
               onClick={cancelarEdicion}
             >
 
@@ -404,6 +478,7 @@ function Contacts() {
 
                         <IonButton
                           fill="clear"
+                          disabled={!isConnected}
                           onClick={() =>
                             editarContacto(
                               contacto
@@ -419,6 +494,7 @@ function Contacts() {
                         <IonButton
                           fill="clear"
                           color="danger"
+                          disabled={!isConnected}
                           onClick={() =>
                             eliminarContacto(
                               contacto.id
