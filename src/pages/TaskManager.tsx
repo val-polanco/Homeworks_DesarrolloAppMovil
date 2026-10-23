@@ -1,81 +1,104 @@
 import {
+  IonButton,
   IonContent,
   IonHeader,
   IonPage,
   IonTitle,
   IonToolbar
-} from '@ionic/react';
+} from "@ionic/react";
 
-import { useState } from 'react';
+import {
+  useContext
+} from "react";
 
-import TaskForm from '../components/TaskForm';
-import TaskList from '../components/TaskList';
+import {
+  useNavigate
+} from "react-router-dom";
 
+import TaskList from "../components/TaskList";
 
-interface Tarea {
-  id: number;
-  texto: string;
-  completada: boolean;
-}
+import {
+  AuthContext
+} from "../contexts/AuthContext";
+
+import {
+  TasksContext
+} from "../contexts/TaskContext";
+
+import "./TaskManager.css";
 
 
 function TaskManager() {
 
-  const [tareas, setTareas] = useState<Tarea[]>([
-    {
-      id: 1,
-      texto: 'Estudiar Ionic',
-      completada: false
-    },
-    {
-      id: 2,
-      texto: 'Terminar Challenge 03',
-      completada: false
-    }
-  ]);
+  const authContext =
+    useContext(AuthContext);
+
+  const tasksContext =
+    useContext(TasksContext);
+
+  const navigate =
+    useNavigate();
 
 
-  const agregarTarea = (texto: string) => {
+  if (
+    !authContext ||
+    !tasksContext
+  ) {
+    return null;
+  }
 
-    const nuevaTarea: Tarea = {
-      id: Date.now(),
-      texto,
-      completada: false
+
+  const {
+    logout,
+    user
+  } = authContext;
+
+
+  const {
+    tareas,
+    completarTarea,
+    eliminarTarea
+  } = tasksContext;
+
+
+  const cerrarSesion =
+    async () => {
+
+      try {
+
+        await logout();
+
+        navigate(
+          "/login",
+          {
+            replace: true
+          }
+        );
+
+      } catch (error) {
+
+        console.error(
+          "Error al cerrar sesión:",
+          error
+        );
+
+      }
+
     };
 
-    setTareas([
-      ...tareas,
-      nuevaTarea
-    ]);
-  };
+
+  const tareasPendientes =
+    tareas.filter(
+      (tarea) =>
+        !tarea.completada
+    ).length;
 
 
-  const completarTarea = (id: number) => {
-
-    setTareas(
-      tareas.map((tarea) =>
-
-        tarea.id === id
-
-          ? {
-              ...tarea,
-              completada: !tarea.completada
-            }
-
-          : tarea
-      )
-    );
-  };
-
-
-  const eliminarTarea = (id: number) => {
-
-    setTareas(
-      tareas.filter(
-        (tarea) => tarea.id !== id
-      )
-    );
-  };
+  const tareasCompletadas =
+    tareas.filter(
+      (tarea) =>
+        tarea.completada
+    ).length;
 
 
   return (
@@ -84,28 +107,142 @@ function TaskManager() {
 
       <IonHeader>
 
-        <IonToolbar color="primary">
+        <IonToolbar className="task-toolbar">
 
           <IonTitle>
             Task Manager
           </IonTitle>
+
+
+          <IonButton
+            slot="end"
+            fill="clear"
+            className="task-logout-button"
+            onClick={cerrarSesion}
+          >
+
+            Cerrar sesión
+
+          </IonButton>
 
         </IonToolbar>
 
       </IonHeader>
 
 
-      <IonContent className="ion-padding">
+      <IonContent className="task-page">
 
-        <TaskForm
-          onAdd={agregarTarea}
-        />
+        <div className="task-container">
 
-        <TaskList
-          tareas={tareas}
-          onComplete={completarTarea}
-          onDelete={eliminarTarea}
-        />
+
+          <div className="task-welcome-card">
+
+            <p className="task-welcome-small">
+              Sesión iniciada
+            </p>
+
+            <h1 className="task-welcome-title">
+              ¡Hola! 👋
+            </h1>
+
+            <p className="task-email">
+              {user?.email}
+            </p>
+
+          </div>
+
+
+          <h2 className="task-section-title">
+            Tus tareas
+          </h2>
+
+          <p className="task-section-subtitle">
+            Organiza y completa tus actividades pendientes.
+          </p>
+
+
+          <div className="task-stats">
+
+            <div className="task-stat-card">
+
+              <div className="task-stat-number">
+                {tareasPendientes}
+              </div>
+
+              <div className="task-stat-label">
+                Pendientes
+              </div>
+
+            </div>
+
+
+            <div className="task-stat-card">
+
+              <div className="task-stat-number">
+                {tareasCompletadas}
+              </div>
+
+              <div className="task-stat-label">
+                Completadas
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <IonButton
+            expand="block"
+            className="task-new-button"
+            onClick={() =>
+              navigate("/tasks/new")
+            }
+          >
+
+            + Nueva tarea
+
+          </IonButton>
+
+
+          <h3 className="task-list-title">
+            Lista de tareas
+          </h3>
+
+
+          <div className="task-list-card">
+
+            {
+              tareas.length > 0
+
+                ? (
+
+                  <TaskList
+                    tareas={tareas}
+                    onComplete={completarTarea}
+                    onDelete={eliminarTarea}
+                  />
+
+                )
+
+                : (
+
+                  <div className="task-empty">
+
+                    <div className="task-empty-icon">
+                      ✓
+                    </div>
+
+                    No tienes tareas.
+
+                  </div>
+
+                )
+            }
+
+          </div>
+
+
+        </div>
 
       </IonContent>
 

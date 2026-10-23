@@ -3,7 +3,11 @@ import {
   IonCheckbox,
   IonItem,
   IonLabel
-} from '@ionic/react';
+} from "@ionic/react";
+
+import {
+  useNavigate
+} from "react-router-dom";
 
 
 interface Tarea {
@@ -26,6 +30,10 @@ function TaskItem({
   onDelete
 }: Props) {
 
+  const navigate =
+    useNavigate();
+
+
   return (
 
     <IonItem>
@@ -45,8 +53,8 @@ function TaskItem({
           style={{
             textDecoration:
               tarea.completada
-                ? 'line-through'
-                : 'none'
+                ? "line-through"
+                : "none"
           }}
         >
 
@@ -59,8 +67,8 @@ function TaskItem({
 
           {
             tarea.completada
-              ? 'Completada'
-              : 'Pendiente'
+              ? "Completada"
+              : "Pendiente"
           }
 
         </p>
@@ -68,16 +76,52 @@ function TaskItem({
       </IonLabel>
 
 
-      <IonButton
-        color="danger"
-        onClick={() =>
-          onDelete(tarea.id)
-        }
-      >
+      <div className="task-actions">
 
-        Eliminar
+        <IonButton
+          size="small"
+          fill="clear"
+          onClick={() =>
+            navigate(
+              `/tasks/${tarea.id}`
+            )
+          }
+        >
 
-      </IonButton>
+          Ver
+
+        </IonButton>
+
+
+        <IonButton
+          size="small"
+          fill="clear"
+          onClick={() =>
+            navigate(
+              `/tasks/edit/${tarea.id}`
+            )
+          }
+        >
+
+          Editar
+
+        </IonButton>
+
+
+        <IonButton
+          size="small"
+          color="danger"
+          fill="clear"
+          onClick={() =>
+            onDelete(tarea.id)
+          }
+        >
+
+          Eliminar
+
+        </IonButton>
+
+      </div>
 
     </IonItem>
 
