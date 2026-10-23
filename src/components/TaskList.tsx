@@ -1,12 +1,12 @@
 import {
   IonList
-} from '@ionic/react';
+} from "@ionic/react";
 
-import TaskItem from './TaskItem';
+import TaskItem from "./TaskItem";
 
 
 interface Tarea {
-  id: number;
+  id: string;
   texto: string;
   completada: boolean;
 }
@@ -14,8 +14,8 @@ interface Tarea {
 
 interface Props {
   tareas: Tarea[];
-  onComplete: (id: number) => void;
-  onDelete: (id: number) => void;
+  onComplete: (id: string) => void;
+  onDelete: (id: string) => void;
 }
 
 

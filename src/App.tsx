@@ -32,7 +32,7 @@ import Register from "./pages/Register";
 import TaskManager from "./pages/TaskManager";
 import AddEditTask from "./pages/AddEditTask";
 import TaskDetail from "./pages/TaskDetail";
-
+import Contacts from "./pages/Contacts";
 
 import "@ionic/react/css/core.css";
 import "@ionic/react/css/normalize.css";
@@ -120,6 +120,15 @@ function AppRoutes() {
           element={
             user
               ? <TaskManager />
+              : <Navigate to="/login" replace />
+          }
+        />
+
+        <Route
+          path="/contacts"
+          element={
+            user
+              ? <Contacts />
               : <Navigate to="/login" replace />
           }
         />

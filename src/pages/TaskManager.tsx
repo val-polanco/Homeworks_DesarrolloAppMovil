@@ -203,6 +203,16 @@ function TaskManager() {
 
           </IonButton>
 
+          <IonButton
+            expand="block"
+            fill="outline"
+            onClick={() =>
+            navigate("/contacts")
+            }
+          >
+           Contactos en Firebase
+          </IonButton>
+
 
           <h3 className="task-list-title">
             Lista de tareas

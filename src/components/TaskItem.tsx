@@ -11,7 +11,7 @@ import {
 
 
 interface Tarea {
-  id: number;
+  id: string;
   texto: string;
   completada: boolean;
 }
@@ -19,8 +19,8 @@ interface Tarea {
 
 interface Props {
   tarea: Tarea;
-  onComplete: (id: number) => void;
-  onDelete: (id: number) => void;
+  onComplete: (id: string) => void;
+  onDelete: (id: string) => void;
 }
 
 

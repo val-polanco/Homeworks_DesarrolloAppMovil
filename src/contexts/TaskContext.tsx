@@ -1,12 +1,17 @@
 import {
   createContext,
   ReactNode,
+  useEffect,
   useState
 } from "react";
 
+import {
+  useRealTimeCollection
+} from "../hooks/useRealTimeCollection";
+
 
 export interface Tarea {
-  id: number;
+  id: string;
   texto: string;
   completada: boolean;
 }
@@ -18,23 +23,23 @@ interface TasksContextType {
 
   agregarTarea: (
     texto: string
-  ) => void;
+  ) => Promise<void>;
 
   completarTarea: (
-    id: number
-  ) => void;
+    id: string
+  ) => Promise<void>;
 
   eliminarTarea: (
-    id: number
-  ) => void;
+    id: string
+  ) => Promise<void>;
 
   editarTarea: (
-    id: number,
+    id: string,
     texto: string
-  ) => void;
+  ) => Promise<void>;
 
   obtenerTarea: (
-    id: number
+    id: string
   ) => Tarea | undefined;
 }
 
@@ -55,119 +60,114 @@ export function TasksProvider({
 }: Props) {
 
   const [tareas, setTareas] =
-    useState<Tarea[]>([
-      {
-        id: 1,
-        texto: "Estudiar Ionic",
+    useState<Tarea[]>([]);
+
+
+  const {
+    listen,
+    add,
+    edit,
+    removeItem
+  } = useRealTimeCollection("tasks");
+
+
+  useEffect(() => {
+
+    const unsubscribe =
+      listen((datos) => {
+
+        setTareas(
+          datos as Tarea[]
+        );
+
+      });
+
+
+    return () => {
+      unsubscribe();
+    };
+
+  }, []);
+
+
+  const agregarTarea =
+    async (
+      texto: string
+    ) => {
+
+      await add({
+        texto,
         completada: false
-      },
-      {
-        id: 2,
-        texto: "Terminar Challenge 05",
-        completada: false
-      }
-    ]);
-
-
-  const agregarTarea = (
-    texto: string
-  ) => {
-
-    const nuevaTarea: Tarea = {
-
-      id: Date.now(),
-
-      texto,
-
-      completada: false
+      });
 
     };
 
 
-    setTareas([
-      ...tareas,
-      nuevaTarea
-    ]);
+  const completarTarea =
+    async (
+      id: string
+    ) => {
 
-  };
-
-
-  const completarTarea = (
-    id: number
-  ) => {
-
-    setTareas(
-
-      tareas.map((tarea) =>
-
-        tarea.id === id
-
-          ? {
-              ...tarea,
-              completada:
-                !tarea.completada
-            }
-
-          : tarea
-
-      )
-
-    );
-
-  };
+      const tarea =
+        tareas.find(
+          (item) =>
+            item.id === id
+        );
 
 
-  const eliminarTarea = (
-    id: number
-  ) => {
+      if (!tarea) {
+        return;
+      }
 
-    setTareas(
 
-      tareas.filter(
+      await edit(
+        id,
+        {
+          completada:
+            !tarea.completada
+        }
+      );
+
+    };
+
+
+  const eliminarTarea =
+    async (
+      id: string
+    ) => {
+
+      await removeItem(id);
+
+    };
+
+
+  const editarTarea =
+    async (
+      id: string,
+      texto: string
+    ) => {
+
+      await edit(
+        id,
+        {
+          texto
+        }
+      );
+
+    };
+
+
+  const obtenerTarea =
+    (
+      id: string
+    ) => {
+
+      return tareas.find(
         (tarea) =>
-          tarea.id !== id
-      )
+          tarea.id === id
+      );
 
-    );
-
-  };
-
-
-  const editarTarea = (
-    id: number,
-    texto: string
-  ) => {
-
-    setTareas(
-
-      tareas.map((tarea) =>
-
-        tarea.id === id
-
-          ? {
-              ...tarea,
-              texto
-            }
-
-          : tarea
-
-      )
-
-    );
-
-  };
-
-
-  const obtenerTarea = (
-    id: number
-  ) => {
-
-    return tareas.find(
-      (tarea) =>
-        tarea.id === id
-    );
-
-  };
+    };
 
 
   return (

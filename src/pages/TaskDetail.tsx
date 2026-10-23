@@ -44,9 +44,9 @@ function TaskDetail() {
 
 
   const tarea =
-    obtenerTarea(
-      Number(id)
-    );
+    id
+      ? obtenerTarea(id)
+      : undefined;
 
 
   if (!tarea) {
@@ -103,16 +103,21 @@ function TaskDetail() {
           {tarea.texto}
         </h1>
 
+
         <p>
-          Estado:
-          {" "}
+
+          Estado:{" "}
+
           <strong>
+
             {
               tarea.completada
                 ? "Completada"
                 : "Pendiente"
             }
+
           </strong>
+
         </p>
 
 

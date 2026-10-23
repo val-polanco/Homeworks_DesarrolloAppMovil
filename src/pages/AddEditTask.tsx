@@ -61,7 +61,7 @@ function AddEditTask() {
     if (id) {
 
       const tarea =
-        obtenerTarea(Number(id));
+        obtenerTarea(id);
 
       if (tarea) {
         setTexto(tarea.texto);
@@ -69,28 +69,32 @@ function AddEditTask() {
 
     }
 
-  }, [id]);
+  }, [id, obtenerTarea]);
 
 
   const guardar =
-    () => {
+    async () => {
 
       if (texto.trim() === "") {
         return;
       }
 
+
       if (id) {
 
-        editarTarea(
-          Number(id),
+        await editarTarea(
+          id,
           texto
         );
 
       } else {
 
-        agregarTarea(texto);
+        await agregarTarea(
+          texto
+        );
 
       }
+
 
       navigate("/tasks");
 
@@ -106,11 +110,13 @@ function AddEditTask() {
         <IonToolbar color="primary">
 
           <IonTitle>
+
             {
               editando
                 ? "Editar tarea"
                 : "Nueva tarea"
             }
+
           </IonTitle>
 
         </IonToolbar>
