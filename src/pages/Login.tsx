@@ -63,7 +63,7 @@ function Login() {
           password
         );
 
-        navigate("/tasks");
+        navigate("/missions");
 
       } catch (error) {
 
