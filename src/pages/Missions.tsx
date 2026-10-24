@@ -71,7 +71,7 @@ type Coordinates = {
 // PARA PRUEBA RÁPIDA
 // CAMBIA 5 POR 50 ANTES DE LA ENTREGA FINAL
 // ==========================================
-const REQUIRED_DISTANCE = 5;
+const REQUIRED_DISTANCE = 50;
 
 
 const initialMissions: Mission[] = [
